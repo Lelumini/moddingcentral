@@ -24,14 +24,6 @@
             background-attachment: fixed;
         }
 
-        img.logo {
-            position: fixed;
-            top: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 900px;
-        }
-
         .grid-container { 
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -39,7 +31,6 @@
             padding: 100px 20px 20px;
             width: 85%;
             max-width: 1200px;
-            margin-top: 20px;
         }
 
         .preview { 
@@ -58,24 +49,6 @@
             margin-bottom: 15px;
         }
 
-        h3 { 
-            margin: 10px 0;
-            font-size: 20px;
-            color: #4b5c6b;
-            font-weight: 600;
-        }
-
-        p { 
-            margin: 5px 0;
-            font-size: 15px;
-            color: #666;
-            line-height: 1.5;
-        }
-
-        strong {
-            color: #3b4d61;
-        }
-
         .download-btn {
             margin-top: 5px;
             padding: 10px 50px;
@@ -88,120 +61,67 @@
             font-size: 15px;
             border: 3px solid #913A00;
         }
-
-        .button-container {
-            margin-top: 5px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .more-info {
-            display: none;
-            margin-top: 15px;
-            text-align: left;
-            font-size: 14px;
-            color: #555;
-            word-wrap: break-word;
-        }
-
-        .dropdown-btn {
-            margin-top: 10px;
-            padding: 5px 15px;
-            background-color: #FF8623;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            border: 3px solid #913A00;
-        }
-
-        .dropdown-btn {
-            margin-top: 10px;
-            padding: 5px 15px;
-            background-color: #FF8623;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            border: 3px solid #913A00;
-        }
-
-        h5 {
-            position: fixed;
-            transform: translateY(500%);
-        }       
     </style>
 </head>
 <body>
-    <img src="https://i.ibb.co/350HhWXG/modd-color.png" alt="Logo" class="logo">
-    <h5>To make this site work, go <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">here</a> to fix any issues with loading.</h5>
     <div id="output" class="grid-container"></div>
 
     <script>
-        const zipUrl = 'https://cors-anywhere.herokuapp.com/https://github.com/Lelumini/modlibrarydatabase/raw/refs/heads/main/data.zip'; 
+        const zipUrls = [
+            'https://cors-anywhere.herokuapp.com/https://github.com/Lelumini/moddingcentral/blob/main/Cat_pfp_pack.zip',
+            'https://cors-anywhere.herokuapp.com/https://github.com/Lelumini/moddingcentral/blob/main/k_red_floor.zip',
+            'https://cors-anywhere.herokuapp.com/https://github.com/Lelumini/moddingcentral/blob/main/thanos_hair.zip',
+            'https://cors-anywhere.herokuapp.com/https://github.com/Lelumini/moddingcentral/blob/main/spiky_head.zip'
+        ];
         
-        async function loadZipFromUrl(url) {
-            try {
-                const response = await fetch(url);
-                const arrayBuffer = await response.arrayBuffer();
-                const zip = new JSZip();
-                const zipData = await zip.loadAsync(arrayBuffer);
-                
-                const outputDiv = document.getElementById('output');
-                outputDiv.innerHTML = '';
-
-                const folders = Object.keys(zipData.files).filter(path => path.includes('/Item_config.txt')).map(path => path.split('/')[0]);
-                
-                for (const folder of folders) {
-                    const configFile = zipData.file(`${folder}/Item_config.txt`);
-                    const iconFile = zipData.file(`${folder}/icon.png`);
-                    const assetFile = zipData.file(`${folder}/Unzip_me.zip`);
+        async function loadZipFromUrls(urls) {
+            const outputDiv = document.getElementById('output');
+            outputDiv.innerHTML = '';
+            
+            for (const url of urls) {
+                try {
+                    const response = await fetch(url);
+                    const arrayBuffer = await response.arrayBuffer();
+                    const zip = new JSZip();
+                    const zipData = await zip.loadAsync(arrayBuffer);
                     
-                    if (!configFile || !iconFile || !assetFile) continue;
+                    const folders = Object.keys(zipData.files).filter(path => path.includes('/Item_config.txt')).map(path => path.split('/')[0]);
                     
-                    const configText = await configFile.async("text");
-                    const configJson = JSON.parse(configText);
-                    const iconBlob = await iconFile.async("blob");
-                    const assetBlob = await assetFile.async("blob");
-                    const iconUrl = URL.createObjectURL(iconBlob);
-                    const assetUrl = URL.createObjectURL(assetBlob);
-                    
-                    const itemDiv = document.createElement('div');
-                    itemDiv.classList.add('preview');
-                    itemDiv.innerHTML = `
-                        <img src="${iconUrl}" alt="Icon">
-                        <h3>${configJson.label}</h3>
-                        <p>${configJson.desc}</p>
-                        <p><strong>Created by </strong> @${configJson.author}</p>                     
-                        <p><strong>Replaces:</strong> ${configJson.replace}</p>
-                        <button class="dropdown-btn" onclick="toggleMoreInfo(this)">How to setup?</button>
-                        <div class="more-info">
-                            <p>Make sure you have a copy of the original file before installing the mod. ${configJson.popup  || "no info."}</p>
-                        </div>
-                        <div class="button-container">
-                            <a href="${assetUrl}" download="Unzip_me.zip" class="download-btn">Download</a>
-                        </div>
-                    `;
-                    outputDiv.appendChild(itemDiv);
+                    for (const folder of folders) {
+                        const configFile = zipData.file(`${folder}/Item_config.txt`);
+                        const iconFile = zipData.file(`${folder}/icon.png`);
+                        const assetFile = zipData.file(`${folder}/Unzip_me.zip`);
+                        
+                        if (!configFile || !iconFile || !assetFile) continue;
+                        
+                        const configText = await configFile.async("text");
+                        const configJson = JSON.parse(configText);
+                        const iconBlob = await iconFile.async("blob");
+                        const assetBlob = await assetFile.async("blob");
+                        const iconUrl = URL.createObjectURL(iconBlob);
+                        const assetUrl = URL.createObjectURL(assetBlob);
+                        
+                        const itemDiv = document.createElement('div');
+                        itemDiv.classList.add('preview');
+                        itemDiv.innerHTML = `
+                            <img src="${iconUrl}" alt="Icon">
+                            <h3>${configJson.label}</h3>
+                            <p><strong>Created by </strong> ${configJson.author}</p>                     
+                            <p>${configJson.desc}</p>
+                            <p><strong>Replaces:</strong> ${configJson.replace}</p>
+                            <div class="button-container">
+                                <a href="${assetUrl}" download="Unzip_me.zip" class="download-btn">Download</a>
+                            </div>
+                        `;
+                        outputDiv.appendChild(itemDiv);
+                    }
+                } catch (error) {
+                    console.error('Error loading ZIP:', error);
                 }
-            } catch (error) {
-                console.error('Error loading ZIP:', error);
             }
         }
 
-        function toggleMoreInfo(button) {
-            const moreInfoDiv = button.nextElementSibling;
-            if (moreInfoDiv.style.display === 'none' || moreInfoDiv.style.display === '') {
-                moreInfoDiv.style.display = 'block';
-                button.textContent = 'Close';
-            } else {
-                moreInfoDiv.style.display = 'none';
-                button.textContent = 'How to setup?';
-            }
-        }
-        loadZipFromUrl(zipUrl);
+        loadZipFromUrls(zipUrls);
     </script>
 </body>
 </html>
