@@ -222,15 +222,11 @@
         }
 
         function filterMods() {
-            const query = document.getElementById('searchBar').value.toLowerCase();
-            const filteredMods = modsData.filter(mod => {
-                return Object.values(mod.config).some(value =>
-                    typeof value === 'string' && value.toLowerCase().includes(query)
-                );
-            });
+            const query = document.getElementById('search-bar').value.toLowerCase();
+            const filteredMods = allMods.filter(mod => mod.name.includes(query));
             displayMods(filteredMods);
         }
-
+        
         loadZipFromUrl(zipUrl);
     </script>
 </body>
