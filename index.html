@@ -23,21 +23,6 @@
             background-position: top left;
             background-attachment: fixed;
         }
-        
-       .search-container {
-            margin-top: 120px;
-            width: 85%;
-            max-width: 600px;
-        }
-
-        .search-bar {
-            width: 100%;
-            padding: 10px;
-            font-size: 16px;
-            border: 2px solid #913A00;
-            border-radius: 5px;
-            outline: none;
-        }
 
         img.logo {
             position: absolute;
@@ -152,9 +137,6 @@
 </head>
 <body>
     <img src="https://i.ibb.co/350HhWXG/modd-color.png" alt="Logo" class="logo">
-    <div class="search-container">
-        <input type="text" id="searchBar" class="search-bar" placeholder="Search" onkeyup="filterMods()">
-    </div>
     <div id="output" class="grid-container"></div>
 
     <script>
@@ -221,15 +203,6 @@
             }
         }
 
-            function filterMods() {
-                const searchBar = document.getElementById('search-bar');
-                if (!searchBar) return;
-                const query = searchBar.value.toLowerCase();
-                const filteredMods = allMods.filter(mod => mod.name.includes(query));
-                displayMods(filteredMods);
-            }
-
-        document.getElementById('search-bar').addEventListener('keyup', filterMods);
         loadZipFromUrl(zipUrl);
     </script>
 </body>
