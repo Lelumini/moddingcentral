@@ -221,11 +221,14 @@
             }
         }
 
-        function filterMods() {
-            const query = document.getElementById('search-bar').value.toLowerCase();
-            const filteredMods = allMods.filter(mod => mod.name.includes(query));
-            displayMods(filteredMods);
-        }
+            function filterMods() {
+                const searchBar = document.getElementById('search-bar');
+                if (!searchBar) return;
+                const query = searchBar.value.toLowerCase();
+                const filteredMods = allMods.filter(mod => mod.name.includes(query));
+                displayMods(filteredMods);
+            }
+
         
         loadZipFromUrl(zipUrl);
     </script>
